@@ -7,7 +7,6 @@
       drop-placeholder="Drop file here..."></b-form-file>
     <div class="mt-3">Selected file: {{ file ? file.name : '' }}</div>
     <b-button :disabled="buttonDisabled" type="button" variant="secondary" @click="post">Send File</b-button>
-    <b-table :items="items"></b-table>
   </div>
 </template>
 
@@ -28,8 +27,8 @@
         },
 
         methods: {
-            async post() {
-
+            async post()
+            {
                 if (this.file.type !== 'text/xml') {
                     alert("Not a valid file type");
                     return;
@@ -37,13 +36,13 @@
 
                 let formData = new FormData();
                 formData.append('file', this.file);
-                let resp = await this.$axios.post('http://localhost:8080/api/file', formData, {
+                await this.$axios.post('http://localhost:8080/api/post/file', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                this.items = resp.data;
             }
+
         },
 
     }

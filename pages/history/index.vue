@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form-group label="Choose input type">
+    <b-form-group id="form-input-type" label="Choose input type">
       <b-form-radio-group v-model="selected" :options="options">
       </b-form-radio-group>
     </b-form-group>
@@ -31,5 +31,11 @@
 </script>
 
 <style scoped>
-
+  #form-input-type{
+    margin: 30px auto;
+    text-align: center;
+    font-size: larger;
+    font-weight: lighter;
+    font-style: italic;
+  }
 </style>

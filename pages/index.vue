@@ -13,65 +13,86 @@
           </b-form-group>
         </b-col>
         <b-col cols="2">
-          <b-button :disabled="submitDisabled" type="submit" variant="">Show Data</b-button>
+          <b-button :disabled="submitDisabled" type="submit" variant="info">Show Data</b-button>
         </b-col>
       </b-form>
     </b-container>
-    <b-table bordered small responsive hover :items="items"></b-table>
+    <b-table bordered small responsive hover :fields="fields" :items="items">
+      <template v-slot:cell(edit)="row">
+        <b-button size="sm" @click="redirect(row)">Edit</b-button>
+      </template>
+    </b-table>
   </div>
 </template>
 
 <script>
+export default {
+  data() {
+    return {
+      form: {
+        fromDate: "",
+        toDate: ""
+      },
+      items: [],
+      fields: [
+        { key: "orderDate", label: "Order Date" },
+        { key: "type", label: "Type" },
+        { key: "description", label: "Description" },
+        { key: "amount", label: "Amount" },
+        { key: "edit", label: "Edit" }
+      ]
+    };
+  },
 
-    export default {
+  methods: {
+    getInitialDates() {
+      this.form.fromDate = this.$moment()
+        .subtract(2, "months")
+        .format("YYYY-MM-DD");
+      this.form.toDate = this.$moment().format("YYYY-MM-DD");
+    },
 
-        data() {
-            return {
-                form: {
-                    fromDate: '',
-                    toDate: '',
-                },
-                items: []
-            }
-        },
+    redirect(row) {
+      this.$router.push(`/history/${row.item.id}`);
+    },
 
-        methods: {
-            getInitialDates() {
-                this.form.fromDate = this.$moment().subtract(2, "months").format('YYYY-MM-DD');
-                this.form.toDate = this.$moment().format('YYYY-MM-DD');
-            },
+    async onSubmit(e) {
+      if (e !== undefined) {
+        e.preventDefault();
+      }
+      let response = await this.$axios.get(
+        `http://localhost:8080/api/operations/${this.form.fromDate}/${this.form.toDate}`
+      );
+      this.items = response.data;
+    },
 
-            async onSubmit(e) {
-                if (e !== undefined){
-                    e.preventDefault();
-                }
-                let response = await this.$axios.get(`http://localhost:8080/api/operations/${this.form.fromDate}/${this.form.toDate}`);
-                this.items = response.data;
-            },
-
-
-        },
-
-        computed: {
-            submitDisabled: function () {
-                return !(this.form.fromDate !== '' && this.form.toDate !== '' && this.form.fromDate <= this.form.toDate)
-            }
-        },
-
-        beforeMount() {
-            this.getInitialDates();
-            this.onSubmit();
-        },
-
+    log(row) {
+      console.log(row.item.id);
     }
+  },
 
+  computed: {
+    submitDisabled: function() {
+      return !(
+        this.form.fromDate !== "" &&
+        this.form.toDate !== "" &&
+        this.form.fromDate <= this.form.toDate
+      );
+    }
+  },
+
+  beforeMount() {
+    this.getInitialDates();
+    this.onSubmit();
+  }
+};
 </script>
 
 <style scoped>
-  #date-picker-container {
-    width: 60%;
-    margin: 30px auto;
-    font-weight: lighter;
-    font-size: larger;
-  }
+#date-picker-container {
+  width: 60%;
+  margin: 30px auto;
+  font-weight: lighter;
+  font-size: larger;
+}
 </style>

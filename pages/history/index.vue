@@ -5,16 +5,19 @@
       </b-form-radio-group>
     </b-form-group>
     <FileUpload v-if="selected==='F'"/>
+    <OperationForm v-if="selected === 'M'"/>
   </div>
 </template>
 
 <script>
 
     import FileUpload from "@/components/FileUpload";
+    import OperationForm from "@/components/OperationForm";
 
     export default {
         components: {
-            FileUpload
+            FileUpload,
+            OperationForm
         },
 
         data() {

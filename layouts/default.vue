@@ -3,8 +3,8 @@
     <b-navbar toggleable="lg" type="dark" variant="dark">
       <b-navbar-brand tag="h1" class="mb-1">Home Finance</b-navbar-brand>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item to="/" :active="$route.name == 'index'">Main</b-nav-item>
-        <b-nav-item to="/history" :active="$route.name == 'history'">Add history</b-nav-item>
+        <b-nav-item to="/" :active="$route.name === 'index'">Main</b-nav-item>
+        <b-nav-item to="/history" :active="$route.name === 'history' || $route.name === 'history-id'">Add history</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <nuxt />

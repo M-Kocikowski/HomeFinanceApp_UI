@@ -68,7 +68,7 @@ export default {
 
       if (this.form.id === "") {
         await this.$axios.post(
-          "http://localhost:8080/api/post",
+          "http://localhost:8080/api/operations/post",
           JSON.stringify(this.form),
           {
             headers: {
@@ -78,7 +78,7 @@ export default {
         );
       } else {
         await this.$axios.put(
-          `http://localhost:8080/api/put/${this.form.id}`,
+          `http://localhost:8080/api/operations/put/${this.form.id}`,
           JSON.stringify(this.form),
           {
             headers: {
@@ -95,7 +95,7 @@ export default {
       if (this.editOperation) {
         if (confirm("Are you sure you want to delete the record?")) {
           await this.$axios.delete(
-            `http://localhost:8080/api/delete/${this.form.id}`
+            `http://localhost:8080/api/operations/delete/${this.form.id}`
           );
         }
       } else {

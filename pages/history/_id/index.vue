@@ -33,7 +33,7 @@
 
         async asyncData(context){
             let id = context.route.params.id;
-            let response = await context.$axios.get(`http://localhost:8080/api/operation/${id}`);
+            let response = await context.$axios.get(`http://localhost:8080/api/operations/${id}`);
             return {item: response.data};
         },
 

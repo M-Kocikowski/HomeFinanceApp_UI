@@ -36,7 +36,7 @@
 
                 let formData = new FormData();
                 formData.append('file', this.file);
-                await this.$axios.post('http://localhost:8080/api/post/file', formData, {
+                await this.$axios.post('http://localhost:8080/api/operations/post/file', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

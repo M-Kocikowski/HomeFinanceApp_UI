@@ -38,6 +38,7 @@ export default {
         { key: "orderDate", label: "Order Date" },
         { key: "type", label: "Type" },
         { key: "description", label: "Description" },
+        { key: "category.name", label: "Category" },
         { key: "amount", label: "Amount" },
         { key: "edit", label: "Edit" }
       ]

@@ -32,7 +32,7 @@
 
       <b-button
         type="submit"
-        variant="primary"
+        variant="success"
       >{{this.editOperation ? 'Modify operation' : 'Save new operation'}}</b-button>
       <b-button type="reset" variant="danger">{{this.editOperation ? 'Delete Operation' : 'Reset'}}</b-button>
     </b-form>

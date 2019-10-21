@@ -41,12 +41,12 @@ export default {
     return {
       selectedItem: "",
       textField: "",
-      selectOptions: [
-        {
-          id: Number,
-          name: String
-        }
-      ],
+      // selectOptions: [
+      //   {
+      //     id: Number,
+      //     name: String
+      //   }
+      // ],
       radioSelected: ""
     };
   },
@@ -66,6 +66,10 @@ export default {
       } else {
         return (this.textField === "" || this.selectedItem === "");
       }
+    },
+
+    selectOptions(){
+      return this.$store.state.category.categories;
     }
   },
 
@@ -84,19 +88,14 @@ export default {
       );
       this.$router.push("/");
     },
-
-    showItem(){
-      console.log(this.selectedItem);
-    }
-
   },
 
-  async asyncData(context) {
-    const response = await context.$axios.get(
-      "http://localhost:8080/api/categories"
-    );
-    return { selectOptions: response.data };
-  }
+  // async asyncData(context) {
+  //   const response = await context.$axios.get(
+  //     "http://localhost:8080/api/categories"
+  //   );
+  //   return { selectOptions: response.data };
+  // }
 };
 </script>
 

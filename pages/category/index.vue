@@ -67,18 +67,15 @@ export default {
   },
 
   methods: {
-    async getCategories() {
-      return await this.$axios.get("http://localhost:8080/api/categories/post");
-    },
 
     async onSubmit(evt) {
-      // evt.preventDefault();
       const radioSelected = this.radioSelected;
       const categoryName = this.textField;
       const selectedCategory = this.selectedItem;
+      let category = {};
       switch (radioSelected) {
         case "N":
-          await this.$axios.post(
+          category = await this.$axios.post(
             "http://localhost:8080/api/categories/post",
             JSON.stringify({ name: categoryName }),
             {
@@ -87,23 +84,24 @@ export default {
               }
             }
           );
-          this.$store.commit("category/categorize", this.getCategories);
+          this.$store.commit('category/addCategory', category.data);
           this.$router.push("/");
           break;
 
         case "E":
-          await this.$axios.put(
+          category = await this.$axios.put(
             `http://localhost:8080/api/categories/put/${selectedCategory}`,
             JSON.stringify({
               id: selectedCategory,
-              name: categoryName }),
+              name: categoryName
+            }),
             {
               headers: {
                 "Content-Type": "application/json"
               }
             }
           );
-          this.$store.commit("category/categorize", this.getCategories);
+          this.$store.commit("category/editCategory", category.data);
           this.$router.push("/");
           break;
 
@@ -113,9 +111,10 @@ export default {
             JSON.stringify({
               category: {
                 id: selectedCategory,
-                name: ''
+                name: ""
               },
-              categorizationItem: categoryName }),
+              categorizationItem: categoryName
+            }),
             {
               headers: {
                 "Content-Type": "application/json"

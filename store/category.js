@@ -5,12 +5,14 @@ export const state = () => ({
 export const mutations = {
   categorize(state, data) {
     state.categories = data;
-  }
-}
+  },
 
-export const actions = {
-  async nuxtServerInit(commit, context) {
-    const resp = await context.$axios.get('http://localhost:8080/api/categories');
-    commit('categorize', resp.data);
+  addCategory(state, category){
+    state.categories.push(category);
+  },
+
+  editCategory(state, category){
+    const index = state.categories.findIndex(el => el.id === category.id);
+    state.categories[index] = category;
   }
 }

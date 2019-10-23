@@ -5,7 +5,8 @@
       :type="item.type"
       :orderDate="item.orderDate"
       :description="item.description"
-      :amount="item.amount"/>
+      :amount="item.amount"
+      :category="item.category"/>
   </div>
 </template>
 
@@ -26,6 +27,10 @@
                     type: String,
                     orderDate: String,
                     description: String,
+                    category: {
+                      id: Number,
+                      name: String
+                    },
                     amount: Number
                 }
             }

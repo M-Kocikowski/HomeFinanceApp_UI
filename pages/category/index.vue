@@ -7,7 +7,7 @@
         <b-form-radio value="C" :disabled="this.selectOptions.length === 0">Categorize Item</b-form-radio>
       </b-form-radio-group>
     </b-form-group>
-    <b-form @submit="onSubmit" style="margin: auto 10%" v-if="this.radioSelected">
+    <b-form @submit.prevent="onSubmit" style="margin: auto 10%" v-if="this.radioSelected">
       <b-form-group
         id="input-group-1"
         label="Choose category"
@@ -20,7 +20,6 @@
           :options="selectOptions"
           value-field="id"
           text-field="name"
-          @change="showItem"
         ></b-form-select>
       </b-form-group>
       <b-form-group id="input-group-2" :label="labelText" label-for="input-2">
@@ -41,12 +40,6 @@ export default {
     return {
       selectedItem: "",
       textField: "",
-      // selectOptions: [
-      //   {
-      //     id: Number,
-      //     name: String
-      //   }
-      // ],
       radioSelected: ""
     };
   },
@@ -64,38 +57,79 @@ export default {
       if (this.radioSelected === "N") {
         return this.textField === "";
       } else {
-        return (this.textField === "" || this.selectedItem === "");
+        return this.textField === "" || this.selectedItem === "";
       }
     },
 
-    selectOptions(){
+    selectOptions() {
       return this.$store.state.category.categories;
     }
   },
 
   methods: {
-    async onSubmit(evt) {
-      evt.preventDefault();
-      let category = {name: this.textField};
-      await this.$axios.post(
-        "http://localhost:8080/api/categories/post",
-        JSON.stringify(category),
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      this.$router.push("/");
+    async getCategories() {
+      return await this.$axios.get("http://localhost:8080/api/categories/post");
     },
-  },
 
-  // async asyncData(context) {
-  //   const response = await context.$axios.get(
-  //     "http://localhost:8080/api/categories"
-  //   );
-  //   return { selectOptions: response.data };
-  // }
+    async onSubmit(evt) {
+      // evt.preventDefault();
+      const radioSelected = this.radioSelected;
+      const categoryName = this.textField;
+      const selectedCategory = this.selectedItem;
+      switch (radioSelected) {
+        case "N":
+          await this.$axios.post(
+            "http://localhost:8080/api/categories/post",
+            JSON.stringify({ name: categoryName }),
+            {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          );
+          this.$store.commit("category/categorize", this.getCategories);
+          this.$router.push("/");
+          break;
+
+        case "E":
+          await this.$axios.put(
+            `http://localhost:8080/api/categories/put/${selectedCategory}`,
+            JSON.stringify({
+              id: selectedCategory,
+              name: categoryName }),
+            {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          );
+          this.$store.commit("category/categorize", this.getCategories);
+          this.$router.push("/");
+          break;
+
+        case "C":
+          await this.$axios.post(
+            `http://localhost:8080/api/categories/categorize/post/`,
+            JSON.stringify({
+              category: {
+                id: selectedCategory,
+                name: ''
+              },
+              categorizationItem: categoryName }),
+            {
+              headers: {
+                "Content-Type": "application/json"
+              }
+            }
+          );
+          this.$router.push("/");
+          break;
+
+        default:
+          this.$router.push("/");
+      }
+    }
+  }
 };
 </script>
 

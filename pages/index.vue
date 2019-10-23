@@ -82,11 +82,6 @@ export default {
     }
   },
 
-  async fetch(context){
-    const response = await context.$axios.get('http://localhost:8080/api/categories');
-    context.store.commit('category/categorize', response.data);
-  },
-
   beforeMount() {
     this.getInitialDates();
     this.onSubmit();

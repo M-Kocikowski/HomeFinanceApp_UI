@@ -30,6 +30,16 @@
         <b-form-input v-model="form.amount" id="input-4" type="number" step="0.01"></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-5" label="Category" label-for="input-5">
+        <b-form-select
+          id="input-5"
+          v-model="form.category.id"
+          :options="selectOptions"
+          value-field="id"
+          text-field="name"
+        ></b-form-select>
+      </b-form-group>
+
       <b-button
         type="submit"
         variant="success"
@@ -46,7 +56,11 @@ export default {
     type: String,
     orderDate: String,
     description: String,
-    amount: Number
+    amount: Number,
+    category: {
+      id: Number,
+      name: String
+    }
   },
 
   data() {
@@ -56,10 +70,20 @@ export default {
         type: "",
         orderDate: "",
         description: "",
-        amount: ""
+        amount: "",
+        category: {
+          id: "",
+          name: ""
+        }
       },
       editOperation: false
     };
+  },
+
+  computed: {
+    selectOptions() {
+      return this.$store.state.category.categories;
+    }
   },
 
   methods: {
@@ -97,6 +121,7 @@ export default {
           await this.$axios.delete(
             `http://localhost:8080/api/operations/delete/${this.form.id}`
           );
+          this.$router.push("/");
         }
       } else {
         this.form.type = "";
@@ -114,6 +139,9 @@ export default {
       this.form.orderDate = this.orderDate;
       this.form.description = this.description;
       this.form.amount = this.amount;
+      if (this.category !== null) {
+        this.form.category.id = this.category.id;
+      }
       this.editOperation = true;
     }
   }

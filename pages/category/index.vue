@@ -49,7 +49,7 @@ export default {
       if (this.radioSelected === "N" || this.radioSelected === "E") {
         return "Category Name";
       } else {
-        return "Categorization Text";
+        return "Categorization Item";
       }
     },
 
@@ -107,7 +107,7 @@ export default {
 
         case "C":
           await this.$axios.post(
-            `http://localhost:8080/api/categories/categorize/post/`,
+            `http://localhost:8080/api/categories/item/post/`,
             JSON.stringify({
               category: {
                 id: selectedCategory,

@@ -19,7 +19,7 @@
     </b-container>
     <b-table bordered small responsive hover :fields="fields" :items="items">
       <template v-slot:cell(edit)="row">
-        <b-button size="sm" @click="redirect(row)">Edit</b-button>
+        <b-button size="sm" @click.prevent="redirect(row)">Edit</b-button>
       </template>
     </b-table>
   </div>
@@ -58,18 +58,11 @@ export default {
     },
 
     async onSubmit(e) {
-      if (e !== undefined) {
-        e.preventDefault();
-      }
       let response = await this.$axios.get(
         `http://localhost:8080/api/operations/${this.form.fromDate}/${this.form.toDate}`
       );
       this.items = response.data;
     },
-
-    log(row) {
-      console.log(row.item.id);
-    }
   },
 
   computed: {

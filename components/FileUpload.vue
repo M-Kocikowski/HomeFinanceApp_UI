@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="file-input">
     <b-form-file
       v-model="file"
       :state="Boolean(file)"
@@ -49,5 +49,7 @@
 </script>
 
 <style scoped>
-
+  .file-input {
+    margin: auto 10%;
+  }
 </style>

@@ -1,92 +1,97 @@
 <template>
   <div>
-    <b-container fluid id="date-picker-container">
-      <b-form @submit="onSubmit" inline>
-        <b-col cols="5">
-          <b-form-group id="form-group-1" label="Date From:" label-for="input-date-from">
-            <b-form-input id="input-date-from" type="date" required v-model="form.fromDate"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col cols="5">
-          <b-form-group id="form-group-2" label="Date To:" label-for="input-date-to">
-            <b-form-input id="input-date-to" type="date" required v-model="form.toDate"></b-form-input>
-          </b-form-group>
-        </b-col>
-        <b-col cols="2">
-          <b-button :disabled="submitDisabled" type="submit" variant="info">Show Data</b-button>
-        </b-col>
-      </b-form>
-    </b-container>
-    <b-table bordered small responsive hover :fields="fields" :items="items">
-      <template v-slot:cell(edit)="row">
-        <b-button size="sm" @click.prevent="redirect(row)">Edit</b-button>
-      </template>
-    </b-table>
+    <DatePicker @submitDates="onSubmit($event)"/>
+    <PieChart v-if="chartData.datasets[0].data.length !== 0" :width="300" :height="300" :chartData="chartData" />
+    <AccountTable v-if="items.length !== 0" :items="items"/>
   </div>
 </template>
 
 <script>
+import DatePicker from '@/components/DatePicker';
+import PieChart from "@/components/PieChart";
+import AccountTable from "@/components/AccountTable";
+
 export default {
+  components: {
+    DatePicker,
+    PieChart,
+    AccountTable
+  },
+
   data() {
     return {
-      form: {
-        fromDate: "",
-        toDate: ""
-      },
       items: [],
-      fields: [
-        { key: "orderDate", label: "Order Date" },
-        { key: "type", label: "Type" },
-        { key: "description", label: "Description" },
-        { key: "category.name", label: "Category" },
-        { key: "amount", label: "Amount" },
-        { key: "edit", label: "Edit" }
-      ]
     };
   },
 
   methods: {
-    getInitialDates() {
-      this.form.fromDate = this.$moment()
-        .subtract(2, "months")
-        .format("YYYY-MM-DD");
-      this.form.toDate = this.$moment().format("YYYY-MM-DD");
-    },
 
-    redirect(row) {
-      this.$router.push(`/history/${row.item.id}`);
-    },
-
-    async onSubmit(e) {
+    async onSubmit(event) {
       let response = await this.$axios.get(
-        `http://localhost:8080/api/operations/${this.form.fromDate}/${this.form.toDate}`
+        `http://localhost:8080/api/operations/${event.fromDate}/${event.toDate}`
       );
       this.items = response.data;
-    },
-  },
-
-  computed: {
-    submitDisabled: function() {
-      return !(
-        this.form.fromDate !== "" &&
-        this.form.toDate !== "" &&
-        this.form.fromDate <= this.form.toDate
-      );
     }
   },
 
-  beforeMount() {
-    this.getInitialDates();
-    this.onSubmit();
+  computed: {
+
+    chartData() {
+      const labelArray = this.$store.getters["category/getCategoryNames"];
+      let dataArray = [];
+      this.items.forEach(item => {
+        if (item.category !== null) {
+          const categoryIndex = labelArray.findIndex(
+            el => el === item.category.name
+          );
+          if (categoryIndex !== -1) {
+            let sum = dataArray[categoryIndex];
+            if (sum === undefined) {
+              dataArray[categoryIndex] = Math.abs(item.amount);
+            } else {
+              sum += Math.abs(item.amount);
+              dataArray[categoryIndex] = sum;
+            }
+          }
+        }
+      });
+      let chartObject = {
+        labels: labelArray,
+        datasets: [
+          {
+            backgroundColor: [
+              "blue",
+              "orange",
+              "green",
+              "red",
+              "purple",
+              "yellow",
+              "brown",
+              "pink"
+            ],
+            data: dataArray
+          }
+        ]
+      };
+      return chartObject;
+    }
+  },
+
+  async asyncData(context) {
+    let fromDate = context
+      .$moment()
+      .subtract(2, "months")
+      .format("YYYY-MM-DD");
+    let toDate = context.$moment().format("YYYY-MM-DD");
+    let resp = await context.$axios.get(
+      `http://localhost:8080/api/operations/${fromDate}/${toDate}`
+    );
+    return {items: resp.data};
   }
+
 };
 </script>
 
 <style scoped>
-#date-picker-container {
-  width: 60%;
-  margin: 30px auto;
-  font-weight: lighter;
-  font-size: larger;
-}
+
 </style>

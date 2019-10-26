@@ -113,7 +113,7 @@ export default {
                 id: selectedCategory,
                 name: ""
               },
-              categorizationItem: categoryName
+              item: categoryName
             }),
             {
               headers: {

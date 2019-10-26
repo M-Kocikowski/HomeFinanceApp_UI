@@ -10,3 +10,5 @@ export const actions = {
     vuexContext.commit('category/categorize', resp.data);
   }
 }
+
+export const getters = {}

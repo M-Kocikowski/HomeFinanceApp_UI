@@ -16,3 +16,13 @@ export const mutations = {
     state.categories[index] = category;
   }
 }
+
+export const getters = {
+  getCategoryNames(state){
+    let names = [];
+    for(let i = 0; i < state.categories.length; i++){
+      names.push(state.categories[i].name);
+    }
+    return names;
+  }
+}

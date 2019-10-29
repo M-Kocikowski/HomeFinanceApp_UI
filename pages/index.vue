@@ -37,7 +37,7 @@ export default {
   computed: {
 
     chartData() {
-      const labelArray = this.$store.getters["category/getCategoryNames"];
+      const labelArray = this.items.filter(item => item.category !== null).map(item => item.category.name);
       let dataArray = [];
       this.items.forEach(item => {
         if (item.category !== null) {

@@ -11,8 +11,22 @@ export default {
     },
   },
 
+  methods: {
+    renderPieChart() {
+      this.renderChart(this.chartData, {responsive: true, maintainAspectRatio: false});
+    }
+  },
+
   mounted() {
-    this.renderChart(this.chartData, {responsive: true, maintainAspectRatio: false});
+    this.renderPieChart();
+  },
+
+  watch: {
+    chartData: function() {
+      console.log(this._data._chart);
+      this._data._chart.destroy();
+      this.renderPieChart();
+    }
   }
 };
 
